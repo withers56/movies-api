@@ -12,12 +12,8 @@ import javax.servlet.annotation.WebServlet;
 @WebServlet(name = "MovieServlet", urlPatterns = "/movies/*")
 public class MovieServlet extends HttpServlet {
 
-
-
     ArrayList<Movie> movies = new ArrayList<>();
     int nextId = 1;
-
-
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{
@@ -35,11 +31,10 @@ public class MovieServlet extends HttpServlet {
             e.printStackTrace();
         }
     }
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         response.setContentType("application/json");
-
-
 
         try {
             PrintWriter out = response.getWriter();
@@ -62,21 +57,17 @@ public class MovieServlet extends HttpServlet {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
-        String [] uriParts = request.getRequestURI().split("/");
-        int targetId = Integer.parseInt(uriParts[uriParts.length - 1]);
+        int targetId = getId(request.getRequestURI());
 
         Movie updatedMovie = new Gson().fromJson(request.getReader(), Movie.class);
 
         for (int i = 0; i < movies.size(); i++) {
             if (movies.get(i).getId() == targetId) {
-                updateMovie(targetId, i, updatedMovie);
+                updateMovie( i, updatedMovie);
                 out.println("updated movie with id of: " + movies.get(i).getId() + " And an index of: " + i);
                 return;
             }
         }
-
-//        updateMovie(targetId, updatedMovie);
-//        out.println("updated movie with id of: " + targetId);
     }
 
     @Override
@@ -84,7 +75,7 @@ public class MovieServlet extends HttpServlet {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
-        int targetId = getId(request);
+        int targetId = getId(request.getRequestURI());
 
         for (int i = 0; i < movies.size(); i++) {
             if (movies.get(i).getId() == targetId) {
@@ -99,7 +90,7 @@ public class MovieServlet extends HttpServlet {
 
 
 
-    public void updateMovie(int targetId, int index,  Movie updatedMovie) {
+    public void updateMovie(int index,  Movie updatedMovie) {
         updatedMovie.setId(movies.get(index).getId());
 
         if (updatedMovie.getTitle() != null) {
@@ -128,8 +119,8 @@ public class MovieServlet extends HttpServlet {
         }
     }
 
-    public int getId(HttpServletRequest req){
-        String [] uriParts = req.getRequestURI().split("/");
+    public int getId(String uri){
+        String [] uriParts = uri.split("/");
         return Integer.parseInt(uriParts[uriParts.length - 1]);
     }
 
