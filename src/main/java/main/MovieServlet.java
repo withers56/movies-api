@@ -70,7 +70,32 @@ public class MovieServlet extends HttpServlet {
 
         updatedMovie.setId(movies.get(targetId - 1).getId());
 
-        movies.set(targetId - 1, updatedMovie);
+        if (updatedMovie.getTitle() != null) {
+            movies.get(targetId - 1).setTitle(updatedMovie.getTitle());
+        }
+        if (updatedMovie.getRating() > 0 && updatedMovie.getRating() <= 5) {
+            movies.get(targetId - 1).setRating(updatedMovie.getRating());
+        }
+        if (updatedMovie.getPoster() != null) {
+            movies.get(targetId - 1).setPoster(updatedMovie.getPoster());
+        }
+        if (updatedMovie.getYear() > 0) {
+            movies.get(targetId - 1).setYear(updatedMovie.getYear());
+        }
+        if (updatedMovie.getGenre() != null) {
+            movies.get(targetId - 1).setGenre(updatedMovie.getGenre());
+        }
+        if (updatedMovie.getDirector() != null) {
+            movies.get(targetId - 1).setDirector(updatedMovie.getDirector());
+        }
+        if (updatedMovie.getPlot() != null) {
+            movies.get(targetId - 1).setPlot(updatedMovie.getPlot());
+        }
+        if (updatedMovie.getActors() != null) {
+            movies.get(targetId - 1).setActors(updatedMovie.getActors());
+        }
+//        movies.set(targetId - 1, updatedMovie);
+
         out.println("updated movie with id of: " + targetId);
     }
 
