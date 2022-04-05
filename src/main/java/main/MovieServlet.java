@@ -65,38 +65,18 @@ public class MovieServlet extends HttpServlet {
         String [] uriParts = request.getRequestURI().split("/");
         int targetId = Integer.parseInt(uriParts[uriParts.length - 1]);
 
-//        BufferedReader br = request.getReader();
         Movie updatedMovie = new Gson().fromJson(request.getReader(), Movie.class);
 
-        updatedMovie.setId(movies.get(targetId - 1).getId());
+        for (int i = 0; i < movies.size(); i++) {
+            if (movies.get(i).getId() == targetId) {
+                updateMovie(targetId, i, updatedMovie);
+                out.println("updated movie with id of: " + movies.get(i).getId() + " And an index of: " + i);
+                return;
+            }
+        }
 
-        if (updatedMovie.getTitle() != null) {
-            movies.get(targetId - 1).setTitle(updatedMovie.getTitle());
-        }
-        if (updatedMovie.getRating() > 0 && updatedMovie.getRating() <= 5) {
-            movies.get(targetId - 1).setRating(updatedMovie.getRating());
-        }
-        if (updatedMovie.getPoster() != null) {
-            movies.get(targetId - 1).setPoster(updatedMovie.getPoster());
-        }
-        if (updatedMovie.getYear() > 0) {
-            movies.get(targetId - 1).setYear(updatedMovie.getYear());
-        }
-        if (updatedMovie.getGenre() != null) {
-            movies.get(targetId - 1).setGenre(updatedMovie.getGenre());
-        }
-        if (updatedMovie.getDirector() != null) {
-            movies.get(targetId - 1).setDirector(updatedMovie.getDirector());
-        }
-        if (updatedMovie.getPlot() != null) {
-            movies.get(targetId - 1).setPlot(updatedMovie.getPlot());
-        }
-        if (updatedMovie.getActors() != null) {
-            movies.get(targetId - 1).setActors(updatedMovie.getActors());
-        }
-//        movies.set(targetId - 1, updatedMovie);
-
-        out.println("updated movie with id of: " + targetId);
+//        updateMovie(targetId, updatedMovie);
+//        out.println("updated movie with id of: " + targetId);
     }
 
     @Override
@@ -104,10 +84,53 @@ public class MovieServlet extends HttpServlet {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
-        String [] uriParts = request.getRequestURI().split("/");
-        int targetId = Integer.parseInt(uriParts[uriParts.length - 1]);
+        int targetId = getId(request);
 
-        movies.remove(targetId - 1);
-        out.println("Removed movie with id of: " + targetId);
+        for (int i = 0; i < movies.size(); i++) {
+            if (movies.get(i).getId() == targetId) {
+                out.println("Removed the movie " + movies.get(i).getTitle() + " with id of: " + movies.get(i).getId());
+                movies.remove(i);
+                return;
+            }
+        }
+
+        out.println("Removed the movie " + movies.get(targetId - 1).getTitle() + " with id of: " + targetId);
     }
+
+
+
+    public void updateMovie(int targetId, int index,  Movie updatedMovie) {
+        updatedMovie.setId(movies.get(index).getId());
+
+        if (updatedMovie.getTitle() != null) {
+            movies.get(index).setTitle(updatedMovie.getTitle());
+        }
+        if (updatedMovie.getRating() > 0 && updatedMovie.getRating() <= 5) {
+            movies.get(index).setRating(updatedMovie.getRating());
+        }
+        if (updatedMovie.getPoster() != null) {
+            movies.get(index).setPoster(updatedMovie.getPoster());
+        }
+        if (updatedMovie.getYear() > 0) {
+            movies.get(index).setYear(updatedMovie.getYear());
+        }
+        if (updatedMovie.getGenre() != null) {
+            movies.get(index).setGenre(updatedMovie.getGenre());
+        }
+        if (updatedMovie.getDirector() != null) {
+            movies.get(index).setDirector(updatedMovie.getDirector());
+        }
+        if (updatedMovie.getPlot() != null) {
+            movies.get(index).setPlot(updatedMovie.getPlot());
+        }
+        if (updatedMovie.getActors() != null) {
+            movies.get(index).setActors(updatedMovie.getActors());
+        }
+    }
+
+    public int getId(HttpServletRequest req){
+        String [] uriParts = req.getRequestURI().split("/");
+        return Integer.parseInt(uriParts[uriParts.length - 1]);
+    }
+
 }
