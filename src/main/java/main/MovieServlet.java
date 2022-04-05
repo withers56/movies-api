@@ -84,8 +84,6 @@ public class MovieServlet extends HttpServlet {
                 return;
             }
         }
-
-        out.println("Removed the movie " + movies.get(targetId - 1).getTitle() + " with id of: " + targetId);
     }
 
 
