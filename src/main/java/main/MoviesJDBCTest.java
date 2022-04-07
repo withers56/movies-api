@@ -10,11 +10,13 @@ public class MoviesJDBCTest {
     private static Connection connection = null;
 
     public static void main(String[] args) throws SQLException {
+        Config config = new Config();
+
         DriverManager.registerDriver(new Driver());
         Connection connection = DriverManager.getConnection(
-                "jdbc:mysql://" + Config.DB_HOST + ":3306/william",
-                Config.DB_USER,
-                Config.DB_PW
+                config.DB_HOST,
+                config.DB_USER,
+                config.DB_PW
         );
 
         PreparedStatement ps = connection.prepareStatement

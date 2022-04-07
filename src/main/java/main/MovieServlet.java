@@ -1,7 +1,9 @@
 package main;
 
 import com.google.gson.Gson;
+import config.Config;
 import dao.InMemoryMoviesDao;
+import dao.MySqlMoviesDao;
 import data.Movie;
 
 import java.io.*;
@@ -13,7 +15,9 @@ import javax.servlet.annotation.WebServlet;
 
 @WebServlet(name = "MovieServlet", urlPatterns = "/movies/*")
 public class MovieServlet extends HttpServlet {
+//    Config config = new Config();
     private InMemoryMoviesDao dao = new InMemoryMoviesDao();
+//    private MySqlMoviesDao dao = new MySqlMoviesDao(config);
 
     //fetch all the movies
     @Override
