@@ -59,13 +59,13 @@ public class InMemoryMoviesDao implements MoviesDao{
         if (updatedMovie.getTitle() != null) {
             movies.get(index).setTitle(updatedMovie.getTitle());
         }
-        if (updatedMovie.getRating() > 0 && updatedMovie.getRating() <= 5) {
+        if (updatedMovie.getRating() != null) {
             movies.get(index).setRating(updatedMovie.getRating());
         }
         if (updatedMovie.getPoster() != null) {
             movies.get(index).setPoster(updatedMovie.getPoster());
         }
-        if (updatedMovie.getYear() > 0) {
+        if (updatedMovie.getYear() != null) {
             movies.get(index).setYear(updatedMovie.getYear());
         }
         if (updatedMovie.getGenre() != null) {

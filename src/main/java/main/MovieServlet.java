@@ -15,9 +15,9 @@ import javax.servlet.annotation.WebServlet;
 
 @WebServlet(name = "MovieServlet", urlPatterns = "/movies/*")
 public class MovieServlet extends HttpServlet {
-//    Config config = new Config();
-    private InMemoryMoviesDao dao = new InMemoryMoviesDao();
-//    private MySqlMoviesDao dao = new MySqlMoviesDao(config);
+    Config config = new Config();
+//    private InMemoryMoviesDao dao = new InMemoryMoviesDao();
+    private MySqlMoviesDao dao = new MySqlMoviesDao(config);
 
     //fetch all the movies
     @Override
