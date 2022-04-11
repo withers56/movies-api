@@ -45,9 +45,6 @@ public class MovieServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
 
-
-
-
         try {
             Movie[] newMovies = new Gson().fromJson(request.getReader(), Movie[].class);
 

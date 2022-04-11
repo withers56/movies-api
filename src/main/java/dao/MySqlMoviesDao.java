@@ -38,7 +38,7 @@ public class MySqlMoviesDao implements MoviesDao{
             Movie movie = createMovie(movieRows);
             movies.add(movie);
         }
-
+        movieRows.close();
         ps.close();
         return movies;
     }
@@ -50,39 +50,17 @@ public class MySqlMoviesDao implements MoviesDao{
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM movies WHERE id = ?");
             ps.setInt(1, id);
             ResultSet movieRow = ps.executeQuery();
-            movieRow.next();
-            Movie movie = createMovie(movieRow);
-//            Movie movie = new Movie();
-//            movie.setId(movieRow.getInt("id"));
-//            movie.setTitle(movieRow.getString("title"));
-//            movie.setYear(movieRow.getInt("year"));
-//            movie.setRating(movieRow.getInt("rating"));
-//            movie.setPoster(movieRow.getString("poster"));
-//            movie.setGenre(movieRow.getString("genre"));
-//            movie.setDirector(movieRow.getString("director"));
-//            movie.setPlot(movieRow.getString("plot"));
-//            movie.setActors(movieRow.getString("actors"));
 
+            movieRow.next();
+
+            Movie movie = createMovie(movieRow);
+
+            movieRow.close();
             ps.close();
             return movie;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        System.out.println("findone being called!");
-//        try {
-//            PreparedStatement ps = connection.prepareStatement("select * from movies where id = ?");
-//            ps.setInt(1, id);
-//            ps.executeUpdate();
-//
-//            ResultSet movieRows = ps.executeQuery();
-//
-//            return createMovie(movieRows);
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
         return null;
     }
 
@@ -106,6 +84,8 @@ public class MySqlMoviesDao implements MoviesDao{
             keys.next();
             int newId = keys.getInt(1);
 
+            ps.close();
+            keys.close();
             System.out.println("Id of newly added movie is: " + newId);
 
         }catch (SQLException e) {
@@ -127,47 +107,49 @@ public class MySqlMoviesDao implements MoviesDao{
 
         PreparedStatement og = connection.prepareStatement("SELECT * from movies where id = ?");
         og.setInt(1, movieId);
-        ResultSet ogInfo = og.executeQuery();
-        ogInfo.next();
+        ResultSet originalInfo = og.executeQuery();
+        originalInfo.next();
 
         PreparedStatement updatedInfo = connection.prepareStatement("UPDATE movies SET title = ?, year = ?, director = ?, actors = ?, rating = ?, poster = ?, genre = ?, plot = ? WHERE id = ?");
 
             if (movie.getTitle() != null) {
                 updatedInfo.setString(1, movie.getTitle());
             }
-            else updatedInfo.setString(1, ogInfo.getString("title"));
+            else updatedInfo.setString(1, originalInfo.getString("title"));
             if (movie.getYear() != null) {
                 updatedInfo.setInt(2, movie.getYear());
             }
-            else updatedInfo.setInt(2, ogInfo.getInt("year"));
+            else updatedInfo.setInt(2, originalInfo.getInt("year"));
             if (movie.getDirector() != null) {
                 updatedInfo.setString(3, movie.getDirector());
             }
-            else updatedInfo.setString(3, ogInfo.getString("director"));
+            else updatedInfo.setString(3, originalInfo.getString("director"));
             if (movie.getActors() != null) {
                 updatedInfo.setString(4, movie.getActors());
             }
-            else updatedInfo.setString(4, ogInfo.getString("actors"));
+            else updatedInfo.setString(4, originalInfo.getString("actors"));
             if (movie.getRating() != null) {
                 updatedInfo.setDouble(5, movie.getRating());
             }
-            else updatedInfo.setDouble(5, ogInfo.getDouble("rating"));
+            else updatedInfo.setDouble(5, originalInfo.getDouble("rating"));
             if (movie.getPoster() != null) {
                 updatedInfo.setString(6, movie.getPoster());
             }
-            else updatedInfo.setString(6, ogInfo.getString("poster"));
+            else updatedInfo.setString(6, originalInfo.getString("poster"));
             if (movie.getGenre() != null) {
                 updatedInfo.setString(7, movie.getGenre());
             }
-            else updatedInfo.setString(7, ogInfo.getString("genre"));
+            else updatedInfo.setString(7, originalInfo.getString("genre"));
             if (movie.getPlot() != null) {
                 updatedInfo.setString(8, movie.getPlot());
             }
-            else updatedInfo.setString(8, ogInfo.getString("plot"));
+            else updatedInfo.setString(8, originalInfo.getString("plot"));
 
         updatedInfo.setInt(9, movieId);
         updatedInfo.executeUpdate();
-        ogInfo.close();
+        originalInfo.close();
+        og.close();
+        updatedInfo.close();
     }
 
     @Override
@@ -175,6 +157,7 @@ public class MySqlMoviesDao implements MoviesDao{
         PreparedStatement ps = connection.prepareStatement("delete from movies where id = ?");
         ps.setInt(1, id);
         ps.executeUpdate();
+        ps.close();
     }
 
     @Override
