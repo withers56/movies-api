@@ -42,6 +42,12 @@ public class InMemoryMoviesDao implements MoviesDao{
             }
         }
     }
+
+    @Override
+    public void cleanUp() {
+        System.out.println("Cleaning..");
+    }
+
     //NO SUPPORT YET
     @Override
     public Movie findOne(int id) {

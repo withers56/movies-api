@@ -15,6 +15,19 @@ public class Movie {
     public Movie() {
     }
 
+    public Movie(String title, String plot, Integer year, Double rating, String director, Integer id) {
+        this.title = title;
+        this.plot = plot;
+        this.year = year;
+        this.rating = rating;
+        this.director = director;
+        this.id = id;
+
+        this.poster = "test";
+        this.genre = "test";
+        this.actors = "test";
+    }
+
     public Movie(String title, Double rating, String poster, Integer year, String genre, String director, String plot, String actors, Integer id) {
         this.title = title;
         this.rating = rating;

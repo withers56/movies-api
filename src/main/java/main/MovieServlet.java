@@ -22,17 +22,32 @@ public class MovieServlet extends HttpServlet {
     //fetch all the movies
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{
-        try{
-            String movieString = new Gson().toJson(dao.all());
 
+        String [] uriParts = request.getRequestURI().split("/");
+
+        try{
+            int targetId = Integer.parseInt(uriParts[uriParts.length - 1]);
+            String movieString = new Gson().toJson(dao.findOne(targetId));
             sendOutputToResponse(response, "application/json", movieString);
-        } catch (IOException | SQLException e) {
-            e.printStackTrace();
+
+        }catch (NumberFormatException | SQLException e) {
+            try{
+                String moviesString = new Gson().toJson(dao.all());
+
+                sendOutputToResponse(response, "application/json", moviesString);
+            } catch (SQLException message) {
+                message.printStackTrace();
+            }
         }
+
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+
+
+
+
         try {
             Movie[] newMovies = new Gson().fromJson(request.getReader(), Movie[].class);
 
@@ -66,15 +81,28 @@ public class MovieServlet extends HttpServlet {
         try {
             dao.delete(targetId);
             sendOutputToResponse(response,"text/plain",  "Removed the movie");
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    private void sendOutputToResponse(HttpServletResponse response, String contentType, String output) throws IOException {
-        response.setContentType(contentType);
-        PrintWriter out = response.getWriter();
-        out.println(output);
+    @Override
+    public void destroy() {
+        super.destroy();
+
+        dao.cleanUp();
+    }
+
+    private void sendOutputToResponse(HttpServletResponse response, String contentType, String output){
+
+        try {
+            response.setContentType(contentType);
+            PrintWriter out = null;
+            out = response.getWriter();
+            out.println(output);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public int getId(String uri){
